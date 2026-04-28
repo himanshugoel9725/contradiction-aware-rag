@@ -1,0 +1,41 @@
+experiment_name: experiment_gap4_ablation
+description: "Gap 4 — Ablation study. Full Strategy C pipeline (all components enabled). Run with --skip-* flags to ablate individual components."
+
+dataset:
+  name: healthcontradict_clean184
+  path: data_processed/healthcontradict_clean184.jsonl
+  max_examples: null
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+generation:
+  strategy: C
+  model_task_type: generation
+
+evaluation:
+  compute_metrics: true
+  bootstrap_resamples: 1000
+
+# Ablation conditions (use --skip-* CLI flags):
+#   Full:                  (no flags)
+#   Minus PICO:            --skip-pico
+#   Minus stance:          --skip-stance
+#   Minus quality:         --skip-quality
+#   Minus selection:       --skip-selection
+
+budget:
+  max_minutes: 180
+  cost_alert_every_n_calls: 50

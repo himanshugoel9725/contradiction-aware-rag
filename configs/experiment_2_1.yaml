@@ -1,0 +1,34 @@
+# Experiment 2.1: Retrieval Strategy Comparison (Stance Coverage)
+# Goal: Which retrieval strategy surfaces both SUPPORT + CONTRADICT docs?
+experiment_name: experiment_2_1_retrieval_stance_coverage
+
+dataset:
+  name: healthcontradict
+  path: data_processed/healthcontradict.jsonl
+  max_examples: null  # set to 100 for cheap smoke runs
+  seed: 42
+
+retrieval_variants:
+  - {name: bm25_only, strategy: bm25, top_k: 5}
+  - {name: embedding_only, strategy: embedding, top_k: 5}
+  - {name: hybrid, strategy: hybrid, top_k: 5, bm25_weight: 0.5, embedding_weight: 0.5}
+  - {name: mmr, strategy: mmr, top_k: 5, mmr_lambda: 0.5}
+  - {name: random_baseline, strategy: random, top_k: 5}
+
+pipeline:
+  pico_extraction: false
+  stance_classification: true   # Need stance labels to measure coverage
+  contradiction_aware_selection: false
+  evidence_quality_tagging: false
+  structured_synthesis: false
+  postcheck_verification: false
+
+evaluation:
+  compute_metrics: true
+  run_judge: false
+  bootstrap_resamples: 500
+  metrics: [stance_coverage]
+
+budget:
+  max_minutes: 120
+  cost_alert_every_n_calls: 50

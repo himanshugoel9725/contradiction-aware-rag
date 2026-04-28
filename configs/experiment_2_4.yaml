@@ -1,0 +1,36 @@
+# Experiment 2.4: Ablation Study
+# Isolate contribution of each pipeline component via waterfall plot
+experiment_name: experiment_2_4_ablation
+
+dataset:
+  name: healthcontradict
+  path: data_processed/healthcontradict.jsonl
+  max_examples: null  # set to 100 for cheap smoke runs
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+generation:
+  strategy: C
+  model_task_type: generation
+
+ablation_conditions:
+  - {name: full, pico: true, stance: true, selection: true, quality: true}
+  - {name: minus_pico, pico: false, stance: true, selection: true, quality: true}
+  - {name: minus_stance, pico: true, stance: false, selection: true, quality: true}
+  - {name: minus_quality, pico: true, stance: true, selection: true, quality: false}
+  - {name: minus_selection, pico: true, stance: true, selection: false, quality: true}
+
+evaluation:
+  compute_metrics: true
+  run_judge: true
+  bootstrap_resamples: 500
+  metrics: [cbr, cas, vcs, eaa]
+
+budget:
+  max_minutes: 240
+  cost_alert_every_n_calls: 50

@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+data_raw/
+data_processed/
+models/
+cache/
+runs/
+checkpoints/
+.vscode/
+.DS_Store
+logs/
+.env

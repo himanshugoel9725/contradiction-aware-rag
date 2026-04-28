@@ -1,0 +1,39 @@
+# Experiment 2.3: Generation Strategy Comparison (CAS/VCS/EAA)
+# Strategies: A=Vanilla, B=Stance-labeled, C=Structured, D=PICO-decomposed
+experiment_name: experiment_2_3_generation_strategies
+
+dataset:
+  name: healthcontradict
+  path: data_processed/healthcontradict.jsonl
+  max_examples: null  # set to 100 for cheap smoke runs
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+generation_variants:
+  - {name: A_vanilla, strategy: A, model_task_type: generation}
+  - {name: B_stance, strategy: B, model_task_type: generation}
+  - {name: C_structured, strategy: C, model_task_type: generation}
+  - {name: D_pico, strategy: D, model_task_type: generation}
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+evaluation:
+  compute_metrics: true
+  run_judge: true
+  bootstrap_resamples: 500
+  metrics: [cas, vcs, eaa]
+
+budget:
+  max_minutes: 180
+  cost_alert_every_n_calls: 50

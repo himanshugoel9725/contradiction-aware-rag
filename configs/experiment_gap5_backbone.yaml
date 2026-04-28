@@ -1,0 +1,39 @@
+experiment_name: experiment_gap5_backbone
+description: "Gap 5 — LLM backbone comparison. Strategy C pipeline with configurable model. Override via --model-override CLI flag."
+
+dataset:
+  name: healthcontradict_clean184
+  path: data_processed/healthcontradict_clean184.jsonl
+  max_examples: null
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+generation:
+  strategy: C
+  model_task_type: generation
+
+evaluation:
+  compute_metrics: true
+  bootstrap_resamples: 1000
+
+# Backbone variants (use --model-override CLI flag):
+#   claude-3-5-sonnet-20241022   (default generation model)
+#   claude-3-5-haiku-20241022    (fast/cheap)
+#   gpt-4o-mini                  (OpenAI comparison)
+
+budget:
+  max_minutes: 180
+  cost_alert_every_n_calls: 50

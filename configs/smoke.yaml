@@ -1,0 +1,36 @@
+# Smoke test: 10 examples, verify pipeline end-to-end
+# Runtime: <10 min cold cache, <1 min warm cache
+experiment_name: smoke_test
+
+dataset:
+  name: healthcontradict
+  path: data_processed/healthcontradict.jsonl
+  max_examples: 10
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 10
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+generation:
+  strategy: C              # Structured synthesis (Agreement/Disagreement/Quality/Conclusion)
+  model_task_type: generation
+
+evaluation:
+  compute_metrics: true
+  run_judge: true
+  bootstrap_resamples: 100 # Reduced for speed; paper runs use 1000
+
+budget:
+  max_minutes: 10
+  cost_alert_every_n_calls: 50

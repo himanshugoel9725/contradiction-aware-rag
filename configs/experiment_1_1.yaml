@@ -1,0 +1,39 @@
+# Experiment 1.1: Contradiction Blindness Baseline (CBR)
+# Goal: Measure how often vanilla RAG ignores contradictions
+# 5 retrieval variants × HealthContradict
+experiment_name: experiment_1_1_cbr_baseline
+
+dataset:
+  name: healthcontradict
+  path: data_processed/healthcontradict.jsonl
+  max_examples: null       # null = use all
+  seed: 42
+
+retrieval_variants:
+  - {name: bm25_only, strategy: bm25, top_k: 10}
+  - {name: embedding_only, strategy: embedding, top_k: 10}
+  - {name: hybrid, strategy: hybrid, top_k: 10, bm25_weight: 0.5, embedding_weight: 0.5}
+  - {name: mmr, strategy: mmr, top_k: 10, mmr_lambda: 0.5}
+  - {name: random_baseline, strategy: random, top_k: 10}
+
+pipeline:
+  pico_extraction: false
+  stance_classification: false
+  contradiction_aware_selection: false
+  evidence_quality_tagging: false
+  structured_synthesis: false
+  postcheck_verification: false
+
+generation:
+  strategy: A              # Vanilla prompt — no contradiction awareness
+  model_task_type: cbr_baseline
+
+evaluation:
+  compute_metrics: true
+  run_judge: true
+  bootstrap_resamples: 1000
+  metrics: [cbr]
+
+budget:
+  max_minutes: 120
+  cost_alert_every_n_calls: 50

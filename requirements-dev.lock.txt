@@ -1,0 +1,8 @@
+# Dev/test dependencies — NOT needed at runtime
+# Install: pip install -r requirements-dev.lock.txt
+
+pytest==8.3.5
+ruff==0.11.2
+black==25.1.0
+mypy==1.15.0
+types-PyYAML==6.0.12.20250402

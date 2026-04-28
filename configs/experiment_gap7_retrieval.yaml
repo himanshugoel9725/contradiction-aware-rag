@@ -1,0 +1,43 @@
+experiment_name: experiment_gap7_retrieval
+description: "Gap 7 — Retrieval strategy comparison. Strategy C pipeline with configurable retrieval. Override via --retrieval-strategy CLI flag."
+
+dataset:
+  name: healthcontradict_clean184
+  path: data_processed/healthcontradict_clean184.jsonl
+  max_examples: null
+  seed: 42
+  # full_corpus_path is used to build the retrieval corpus (defaults to path above)
+  full_corpus_path: data_processed/healthcontradict_clean184.jsonl
+
+retrieval:
+  strategy: hybrid          # overridden at runtime via --retrieval-strategy
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+generation:
+  strategy: C
+  model_task_type: generation
+
+evaluation:
+  compute_metrics: true
+  bootstrap_resamples: 1000
+
+# Retrieval variants (use --use-retrieval --retrieval-strategy CLI flags):
+#   bm25        BM25 sparse retrieval
+#   embedding   Dense embedding retrieval
+#   hybrid      BM25 + embedding fusion (default)
+#   mmr         Maximal Marginal Relevance
+#   random      Random baseline
+
+budget:
+  max_minutes: 180
+  cost_alert_every_n_calls: 50

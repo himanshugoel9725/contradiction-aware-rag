@@ -1,0 +1,34 @@
+experiment_name: experiment_gap1_strategy_A
+description: "Gap 1 — Strategy comparison. Baseline: Strategy A (direct factual synthesis)."
+
+dataset:
+  name: healthcontradict_clean184
+  path: data_processed/healthcontradict_clean184.jsonl
+  max_examples: null
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+generation:
+  strategy: A
+  model_task_type: generation
+
+evaluation:
+  compute_metrics: true
+  bootstrap_resamples: 1000
+
+budget:
+  max_minutes: 180
+  cost_alert_every_n_calls: 50

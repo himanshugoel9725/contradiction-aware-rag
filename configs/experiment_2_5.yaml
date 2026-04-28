@@ -1,0 +1,41 @@
+# Experiment 2.5: LLM Backbone Comparison
+# GPT-4o vs GPT-4o-mini vs Llama-3-8B (Ollama)
+experiment_name: experiment_2_5_llm_backbone
+
+dataset:
+  name: healthcontradict
+  path: data_processed/healthcontradict.jsonl
+  max_examples: null  # set to 100 for cheap smoke runs
+  seed: 42
+
+retrieval:
+  strategy: hybrid
+  top_k: 5
+  bm25_weight: 0.5
+  embedding_weight: 0.5
+
+pipeline:
+  pico_extraction: true
+  stance_classification: true
+  contradiction_aware_selection: true
+  evidence_quality_tagging: true
+  structured_synthesis: true
+  postcheck_verification: true
+
+generation:
+  strategy: C
+
+model_variants:
+  - {name: gpt4o, model: gpt-4o, task_type: generation}
+  - {name: gpt4o_mini, model: gpt-4o-mini, task_type: cbr_baseline}
+  - {name: llama3_8b, model: llama-3-8b, backend: ollama, fallback: gpt-4o-mini}
+
+evaluation:
+  compute_metrics: true
+  run_judge: true
+  bootstrap_resamples: 500
+  metrics: [cbr, cas, vcs, eaa]
+
+budget:
+  max_minutes: 180
+  cost_alert_every_n_calls: 50
